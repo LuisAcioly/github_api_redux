@@ -8,8 +8,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using NewThinkersProject.Adapter;
+using NewThinkersProject.Border.Adapter;
+using NewThinkersProject.Border.Repositories;
+using NewThinkersProject.Border.UseCase;
 using NewThinkersProject.Context;
+using NewThinkersProject.Repositories;
 using NewThinkersProject.Services;
+using NewThinkersProject.UseCase.Pokemon;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +46,16 @@ namespace NewThinkersProject
             (Configuration.GetConnectionString("urlSquadra")));
 
             services.AddScoped<IPokemonService, PokemonService>();
+
+            services.AddScoped<IAddPokemonUseCase, AddPokemonUseCase>();
+            services.AddScoped<IDeletePokemonUseCase, DeletePokemonUseCase>();
+            services.AddScoped<IGetPokemonByIdUseCase, GetPokemonByIdUseCase>();
+            services.AddScoped<IGetPokemonListUseCase, GetPokemonListUseCase>();
+            services.AddScoped<IUpdatePokemonUseCase, UpdatePokemonUseCase>();
+
+            services.AddScoped<IPokemonRepository, PokemonRepository>();
+
+            services.AddScoped<IAddPokemonAdapter, AddPokemonAdapter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

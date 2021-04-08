@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NewThinkersProject.Border.UseCase;
+using NewThinkersProject.DTO.Pokemon.AddPokemon;
 using NewThinkersProject.Entities;
 using NewThinkersProject.Services;
 using System;
@@ -15,11 +17,13 @@ namespace NewThinkersProject.Controllers
     {
         private readonly ILogger<PokemonController> _logger;
         private readonly IPokemonService _pokemon;
+        private readonly IAddPokemonUseCase _addPokemonUseCase;
 
-        public PokemonController(ILogger<PokemonController> logger, IPokemonService pokemon)
+        public PokemonController(ILogger<PokemonController> logger, IPokemonService pokemon, IAddPokemonUseCase addPokemonUseCase)
         {
             _logger = logger;
             _pokemon = pokemon;
+            _addPokemonUseCase = addPokemonUseCase;
         }
 
         [HttpGet]
@@ -29,9 +33,9 @@ namespace NewThinkersProject.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddPokemon([FromBody] Pokemon pokemon)
+        public IActionResult AddPokemon([FromBody] AddPokemonRequest request)
         {
-            return Ok(_pokemon.AddPokemon(pokemon));
+            return Ok(_addPokemonUseCase.Execute(request));
         }
 
         [HttpPut]
