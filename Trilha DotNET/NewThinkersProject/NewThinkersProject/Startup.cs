@@ -56,6 +56,7 @@ namespace NewThinkersProject
             services.AddScoped<IPokemonRepository, PokemonRepository>();
 
             services.AddScoped<IAddPokemonAdapter, AddPokemonAdapter>();
+            services.AddScoped<IUpdatePokemonAdapter, UpdatePokemonAdapter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

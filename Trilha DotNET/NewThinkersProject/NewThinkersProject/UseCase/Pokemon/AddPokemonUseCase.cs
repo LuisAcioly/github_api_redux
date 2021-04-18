@@ -24,16 +24,25 @@ namespace NewThinkersProject.UseCase.Pokemon
         public AddPokemonResponse Execute(AddPokemonRequest request)
         {
             var response = new AddPokemonResponse();
-            try
+
+        try
             {
+
+                if (request.name.Length < 20)
+                {
+                    response.message = "Erro ao adicionar o pokemon";
+                    return response;
+                }
+
                 var newPokemon = _adapter.RequestToPokemonConversor(request);
-                _pokemonRepository.Add(newPokemon);
+                var id = _pokemonRepository.Add(newPokemon);
                 response.message = "Adicionado com sucesso";
+                response.id = newPokemon.id;
                 return response;
             }
             catch
             {
-                response.message = "Erro ao adicionar o produto";
+                response.message = "Erro ao adicionar o pokemon";
                 return response;
             }
         }

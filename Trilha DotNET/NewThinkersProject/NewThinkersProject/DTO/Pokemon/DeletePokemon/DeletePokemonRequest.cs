@@ -7,5 +7,6 @@ namespace NewThinkersProject.DTO.Pokemon.DeletePokemon
 {
     public class DeletePokemonRequest
     {
+        public int id { get; set; }
     }
 }

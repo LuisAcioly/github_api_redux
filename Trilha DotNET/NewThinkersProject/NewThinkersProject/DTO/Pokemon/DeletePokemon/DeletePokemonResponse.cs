@@ -7,5 +7,6 @@ namespace NewThinkersProject.DTO.Pokemon.DeletePokemon
 {
     public class DeletePokemonResponse
     {
+        public string message { get; set; }
     }
 }

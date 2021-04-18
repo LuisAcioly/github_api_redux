@@ -9,7 +9,15 @@ namespace NewThinkersProject.Border.Repositories
 {
     public interface IPokemonRepository
     {
-        void Add(Pokemon newPokemon);
+        int Add(Pokemon newPokemon);
+
+        bool Delete(int id);
+
+        Pokemon Get(int id);
+
+        List<Pokemon> GetList();
+
+        void Update(Pokemon newPokemon);
 
     }
 }

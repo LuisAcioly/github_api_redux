@@ -7,5 +7,6 @@ namespace NewThinkersProject.DTO.Pokemon.UpdatePokemon
 {
     public class UpdatePokemonResponse
     {
+        public string message { get; set; }
     }
 }

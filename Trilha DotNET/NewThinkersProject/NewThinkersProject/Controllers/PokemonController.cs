@@ -2,6 +2,9 @@
 using Microsoft.Extensions.Logging;
 using NewThinkersProject.Border.UseCase;
 using NewThinkersProject.DTO.Pokemon.AddPokemon;
+using NewThinkersProject.DTO.Pokemon.DeletePokemon;
+using NewThinkersProject.DTO.Pokemon.GetPokemonById;
+using NewThinkersProject.DTO.Pokemon.UpdatePokemon;
 using NewThinkersProject.Entities;
 using NewThinkersProject.Services;
 using System;
@@ -18,18 +21,29 @@ namespace NewThinkersProject.Controllers
         private readonly ILogger<PokemonController> _logger;
         private readonly IPokemonService _pokemon;
         private readonly IAddPokemonUseCase _addPokemonUseCase;
+        private readonly IDeletePokemonUseCase _deletePokemonUseCase;
+        private readonly IGetPokemonByIdUseCase _getPokemonByIdUseCase;
+        private readonly IGetPokemonListUseCase _getPokemonListUseCase;
+        private readonly IUpdatePokemonUseCase _updatePokemonUseCase;
 
-        public PokemonController(ILogger<PokemonController> logger, IPokemonService pokemon, IAddPokemonUseCase addPokemonUseCase)
+
+        public PokemonController(ILogger<PokemonController> logger, IPokemonService pokemon, IAddPokemonUseCase addPokemonUseCase, IDeletePokemonUseCase deletePokemonUseCase, IGetPokemonByIdUseCase getPokemonByIdUseCase, IGetPokemonListUseCase getPokemonListUseCase, IUpdatePokemonUseCase updatePokemonUseCase)
         {
             _logger = logger;
             _pokemon = pokemon;
+
             _addPokemonUseCase = addPokemonUseCase;
+            _deletePokemonUseCase = deletePokemonUseCase;
+            _getPokemonByIdUseCase = getPokemonByIdUseCase;
+            _getPokemonListUseCase = getPokemonListUseCase;
+            _updatePokemonUseCase = updatePokemonUseCase;
         }
 
         [HttpGet]
         public IActionResult ListPokemons()
         {
-            return Ok(_pokemon.GetPokemonList());
+            var response = _getPokemonListUseCase.Execute();
+            return Ok(response.message);
         }
 
         [HttpPost]
@@ -39,21 +53,26 @@ namespace NewThinkersProject.Controllers
         }
 
         [HttpPut]
-        public IActionResult UpdatePokemon([FromBody] Pokemon pokemon)
+        public IActionResult UpdatePokemon([FromBody] UpdatePokemonRequest request)
         {
-            return Ok(_pokemon.UpdatePokemon(pokemon));
+            return Ok(_updatePokemonUseCase.Execute(request));
         }
 
         [HttpGet("{id}")]
         public IActionResult GetPokemonById(int id)
         {
-            return Ok(_pokemon.GetPokemonById(id));
+            var request = new GetPokemonByIdRequest();
+            request.id = id;
+            var response = _getPokemonByIdUseCase.Execute(request);
+            return Ok(response.message);
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeletePokemon(int id)
         {
-            return Ok(_pokemon.DeletePokemon(id));
+            var request = new DeletePokemonRequest();
+            request.id = id;
+            return Ok(_deletePokemonUseCase.Execute(request));
         }
     }
 }

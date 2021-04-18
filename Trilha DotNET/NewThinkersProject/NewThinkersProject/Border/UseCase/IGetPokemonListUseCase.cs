@@ -8,6 +8,6 @@ namespace NewThinkersProject.Border.UseCase
 {
     public interface IGetPokemonListUseCase
     {
-        GetPokemonListResponse Execute(GetPokemonListRequest request);
+        GetPokemonListResponse Execute();
     }
 }

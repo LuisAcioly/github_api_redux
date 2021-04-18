@@ -7,5 +7,6 @@ namespace NewThinkersProject.DTO.Pokemon.GetPokemonById
 {
     public class GetPokemonByIdResponse
     {
+        public string message { get; set; }
     }
 }
