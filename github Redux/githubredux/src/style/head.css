@@ -1,0 +1,22 @@
+.head {
+    text-align: center;
+    padding-top: 2.5%;
+}
+
+.head-link {
+    display:flex;
+    justify-content:left;
+    margin-left: 29vw;
+    margin-bottom: 2%;
+}
+
+.head-link button {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: underline;
+    color: rgb(47, 85, 255);
+  }
