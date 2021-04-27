@@ -2,63 +2,101 @@ import '../style/head.css';
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from 'react';
 import loadRepositories from '../services/api.service';
-import { saveRepositories, favorite } from '../store/actions/index';
+import { favorite } from '../store/actions/index';
 import { FaRegStar, FaStar } from 'react-icons/fa';
-import github from '../assets/github.png';
 import { useHistory } from "react-router-dom";
 
 const Head = () => {
+
+    function repositoryClass(name, login, img, id) {
+        this.name = name;
+        this.login = login;
+        this.img = img;
+        this.id = id;
+        this.favorite = false;
+    }
 
     const [list, setList] = useState([]);
     const dispatch = useDispatch();
     const result  = useSelector((s) => s.common);
     const history = useHistory();
-    
-    async function getList() {
-        const response = await loadRepositories();  
-        dispatch(saveRepositories(response.data.items)); 
+
+    async function getList(query, type) {
+        const response = await loadRepositories(query, type);
+        setRepositories(response);
     }
 
-    useEffect (() => {
-        if(result.unloaded){
-            getList();
-        }
-    }, [])
-
-    function Search(e){
+    async function Search(e){
         e.preventDefault();
-        console.log(e.target.name.value);
-        const res = result.repositories.filter((item) => {
-            if(item.name.indexOf(e.target.name.value) > -1){
-                return item;
-            }
-        });
+        getList(e.target.name.value, e.target.type.value);
+    }
 
-        setList(res);
+    function setRepositories(data){
+        var array = [];
+        Object.keys(data).forEach(
+            function(item){
+                array.push(data[item]);
+            }
+        )
+
+        var resultList = [];
+
+        array.forEach(
+            function(item){
+                var repository = new repositoryClass(item.name, item.owner.login, item.owner.avatar_url, item.id);
+
+                if(verify(repository) === true) {
+                    
+                    repository.favorite = true;
+                }
+                else{
+                    repository.favorite = false;
+                }
+                resultList.push(repository);
+            }
+        );
+        setList(resultList);
+
     }
 
     function favor(item){
         const res = result.repositories;
         const resList = [...list];
-        const index = res.findIndex(t => t.id === item.id);
-        const indexList = list.findIndex(t => t.id === item.id);
-        
+        const listIndex = resList.findIndex(p => p.id == item.id);
+        const index = res.findIndex(p => p.id == item.id);
+        console.log(index);
+        console.log(res);
+        console.log(item);
+
         if(item.favorite === false){
             item.favorite = true;
+            res.push(item);
         }
         else{
+            console.log("retirou");
             item.favorite = false;
+            res.splice(index, 1);
         }
         
-        res.splice(index, 1, item);
-        resList.splice(indexList, 1, item);
-
+        resList.splice(listIndex, 1, item);
         setList(resList);
+
         dispatch(favorite(res)); 
     }
 
     function callFavorites(){
         history.push('/favorites');
+    }
+
+    function verify(repository){
+        var item = repository;
+        item.favorite = true;
+        const res = result.repositories.find(element => element.id === item.id);
+
+        if(res !== undefined){
+            return true;
+        }
+        return false;
     }
 
     return (
@@ -67,11 +105,14 @@ const Head = () => {
             <div className="forms">
                 <form onSubmit={Search}>
                     <select name="type" style={{height: 21, marginRight: 2}}>
-                        <option value="repository">
+                        <option value="repositories">
                             Repósitorio
                         </option>
+                        <option value="users">
+                            Usuários
+                        </option>
                     </select>
-                    <input name="name"/>
+                    <input name="name" required/>
                     <button style={{marginBottom: 20, marginLeft: 5}} type="submit">Buscar</button>
                 </form>
             </div>
@@ -85,9 +126,9 @@ const Head = () => {
                                 </button>
                             </div>
                             <div className="res">
-                                <img src={github} />
+                                <img alt="image" src={item.img} />
                                 {item.name}<br/>
-                                {item.login}
+                                <b style={{marginTop: 5}}>{item.login}</b>
                             </div>
                         </li>
                     })}
