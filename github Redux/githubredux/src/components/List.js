@@ -1,7 +1,6 @@
 import { useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaTimes } from 'react-icons/fa';
-import github from '../assets/github.png';
 import { favorite } from '../store/actions/index';
 import { useDispatch, useSelector } from "react-redux";
 import '../style/head.css';
@@ -17,11 +16,7 @@ const List = () => {
     }, [])
 
     function getList() {
-        const res= result.repositories.filter((item) => {
-            if(item.favorite){
-                return item;
-            }
-        });
+        const res= result.repositories;
 
         setList(res);
     }
@@ -34,15 +29,13 @@ const List = () => {
     function unfavorite(item){
         const res = result.repositories;
         const resList = [...list];
-        const index = res.findIndex(t => t.id === item.id);
-        const indexList = list.findIndex(t => t.id === item.id);
+        const index = list.findIndex(p => p.id === item.id);
         
-        item.favorite = false;
-        
-        res.splice(index, 1, item);
-        resList.splice(indexList, 1);
+        res.splice(index, 1);
+        resList.splice(index, 1);
 
         setList(resList);
+        
         dispatch(favorite(res)); 
     }
 
@@ -59,9 +52,9 @@ const List = () => {
                                 </button>
                             </div>
                             <div className="res">
-                                <img src={github} />
+                                <img alt="image" src={item.img} />
                                 {item.name}<br/>
-                                {item.login}
+                                <b style={{marginTop: 5}}>{item.login}</b>
                             </div>
                         </li>
                     })}
