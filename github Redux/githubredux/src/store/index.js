@@ -1,10 +1,21 @@
-import { createStore, combineReducers } from 'redux';
-import appReducer from './reducers'
+import { createStore, applyMiddleware } from 'redux';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import logger from 'redux-logger';
 
-const rootReducer = combineReducers({
-    repositories: appReducer,
-});
+import appReducer from './reducers/appReducer';
 
-const store = createStore(rootReducer);
+const persistConfig = {
+  key: 'RootStorage',
+  storage: storage
+}
 
-export default store;
+const persistedReducer = persistReducer(persistConfig, appReducer);
+
+const configureStore = () => {
+  var store = createStore(persistedReducer, applyMiddleware(logger));
+  var persistor = persistStore(store);
+  return { store, persistor }
+};
+
+export default configureStore;
